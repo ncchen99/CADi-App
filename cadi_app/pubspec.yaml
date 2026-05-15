@@ -40,4 +40,5 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/Group 118.png
     - assets/videos/

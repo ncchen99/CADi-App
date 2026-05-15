@@ -65,19 +65,12 @@ class CadiWordmark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'CADi',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: AppColors.peach,
-        fontSize: size,
-        fontWeight: FontWeight.w800,
-        letterSpacing: size * 0.08,
-        shadows: const [
-          Shadow(color: Color(0x55FFB08A), blurRadius: 8, offset: Offset(0, 1)),
-          Shadow(color: Colors.white, blurRadius: 1, offset: Offset(0, -1)),
-        ],
-      ),
+    return Image.asset(
+      'assets/Group 118.png',
+      width: size * 2.75,
+      fit: BoxFit.contain,
+      semanticLabel: 'CADi',
+      filterQuality: FilterQuality.high,
     );
   }
 }
@@ -321,84 +314,157 @@ class _BotPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    // Soft drop shadow beneath the bot.
+    final shadow = Paint()
+      ..color = const Color(0x22000000)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.96),
+        width: w * 0.62,
+        height: h * 0.08,
+      ),
+      shadow,
+    );
+
+    // Egg-shaped body with a subtle bottom cleft.
+    final bodyPath = _buildBodyPath(w, h);
     final body = Paint()
-      ..color = const Color(0xFFF6EFE7).withValues(alpha: 0.9)
+      ..shader = const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFFFBF5EC), Color(0xFFEFE6D8)],
+      ).createShader(Rect.fromLTWH(0, 0, w, h))
       ..maskFilter = blurred
-          ? const MaskFilter.blur(BlurStyle.normal, 10)
+          ? const MaskFilter.blur(BlurStyle.normal, 1.2)
           : null;
-    final side = Paint()
-      ..color = const Color(0xFF738088).withValues(alpha: 0.42)
-      ..maskFilter = blurred
-          ? const MaskFilter.blur(BlurStyle.normal, 3)
-          : null;
-    final eye = Paint()..color = const Color(0xFFFFFFB9).withValues(alpha: 0.9);
+    canvas.drawPath(bodyPath, body);
 
-    final rect = Rect.fromLTWH(
-      size.width * 0.18,
-      size.height * 0.05,
-      size.width * 0.64,
-      size.height * 0.82,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        rect,
-        topLeft: Radius.circular(size.width * 0.34),
-        topRight: Radius.circular(size.width * 0.34),
-        bottomLeft: Radius.circular(size.width * 0.08),
-        bottomRight: Radius.circular(size.width * 0.08),
+    // Inner highlight to give the body a soft 3D feel.
+    final highlight = Paint()
+      ..color = Colors.white.withValues(alpha: 0.55)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.42, h * 0.22),
+        width: w * 0.38,
+        height: h * 0.18,
       ),
-      body,
+      highlight,
     );
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          size.width * 0.12,
-          size.height * 0.47,
-          size.width * 0.09,
-          size.height * 0.36,
-        ),
-        const Radius.circular(18),
+    // Grainy side "ears" — drawn as textured ellipses with speckle dots.
+    _drawGrainyEar(
+      canvas,
+      Rect.fromCenter(
+        center: Offset(w * 0.13, h * 0.52),
+        width: w * 0.11,
+        height: h * 0.30,
       ),
-      side,
     );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          size.width * 0.79,
-          size.height * 0.47,
-          size.width * 0.09,
-          size.height * 0.36,
-        ),
-        const Radius.circular(18),
+    _drawGrainyEar(
+      canvas,
+      Rect.fromCenter(
+        center: Offset(w * 0.87, h * 0.52),
+        width: w * 0.11,
+        height: h * 0.30,
       ),
-      side,
     );
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          size.width * 0.38,
-          size.height * 0.35,
-          size.width * 0.035,
-          size.height * 0.12,
-        ),
-        const Radius.circular(6),
-      ),
-      eye,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          size.width * 0.59,
-          size.height * 0.35,
-          size.width * 0.035,
-          size.height * 0.12,
-        ),
-        const Radius.circular(6),
-      ),
-      eye,
-    );
+    // Yellow pill eyes near the top, with a soft glow.
+    final eyeGlow = Paint()
+      ..color = const Color(0xFFFFF4B0).withValues(alpha: 0.55)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+    final eye = Paint()..color = const Color(0xFFFFF18A);
+
+    final eyeW = w * 0.04;
+    final eyeH = h * 0.10;
+    final eyeY = h * 0.22;
+    for (final cx in [w * 0.39, w * 0.61]) {
+      final rect = Rect.fromCenter(
+        center: Offset(cx, eyeY),
+        width: eyeW,
+        height: eyeH,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect.inflate(2), Radius.circular(eyeW)),
+        eyeGlow,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, Radius.circular(eyeW)),
+        eye,
+      );
+    }
+  }
+
+  Path _buildBodyPath(double w, double h) {
+    // Egg silhouette: wider, rounded top; slightly tapered bottom with a tiny dip.
+    final left = w * 0.14;
+    final right = w * 0.86;
+    final top = h * 0.04;
+    final bottom = h * 0.92;
+    final midY = h * 0.55;
+
+    final path = Path()
+      ..moveTo(w * 0.5, top)
+      // top-right curve
+      ..cubicTo(right + (w * 0.04), top, right, midY * 0.6, right, midY)
+      // right side down to bottom-right
+      ..cubicTo(
+        right,
+        bottom - h * 0.05,
+        w * 0.78,
+        bottom,
+        w * 0.58,
+        bottom - h * 0.02,
+      )
+      // small bottom cleft
+      ..cubicTo(
+        w * 0.54,
+        bottom + h * 0.01,
+        w * 0.46,
+        bottom + h * 0.01,
+        w * 0.42,
+        bottom - h * 0.02,
+      )
+      // bottom-left up
+      ..cubicTo(w * 0.22, bottom, left, bottom - h * 0.05, left, midY)
+      // left side up to top
+      ..cubicTo(left, midY * 0.6, left - (w * 0.04), top, w * 0.5, top)
+      ..close();
+    return path;
+  }
+
+  void _drawGrainyEar(Canvas canvas, Rect rect) {
+    // Base soft fill.
+    final base = Paint()
+      ..color = const Color(0xFF9AA4AD).withValues(alpha: 0.32)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+    canvas.drawOval(rect, base);
+
+    // Speckle texture clipped to the ear oval.
+    canvas.save();
+    canvas.clipPath(Path()..addOval(rect));
+    final rng = math.Random(rect.center.dx.toInt());
+    final dot = Paint()
+      ..color = const Color(0xFF6A7682).withValues(alpha: 0.55);
+    final dotCount = 90;
+    for (var i = 0; i < dotCount; i++) {
+      final dx = rect.left + rng.nextDouble() * rect.width;
+      final dy = rect.top + rng.nextDouble() * rect.height;
+      final r = 0.4 + rng.nextDouble() * 0.9;
+      dot.color = Color.fromRGBO(
+        90 + rng.nextInt(40),
+        100 + rng.nextInt(40),
+        110 + rng.nextInt(40),
+        0.35 + rng.nextDouble() * 0.4,
+      );
+      canvas.drawCircle(Offset(dx, dy), r, dot);
+    }
+    canvas.restore();
   }
 
   @override
@@ -439,9 +505,9 @@ class _OrganicMoodOrbState extends State<OrganicMoodOrb>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return CustomPaint(
-          size: Size.square(widget.size),
-          painter: _OrbPainter(progress: _controller.value),
+        return SizedBox.square(
+          dimension: widget.size,
+          child: CustomPaint(painter: _OrbPainter(progress: _controller.value)),
         );
       },
     );
@@ -455,50 +521,150 @@ class _OrbPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    final paint = Paint()
-      ..shader = const RadialGradient(
-        colors: [Color(0xFFFFF1D9), Color(0xFFFFB78F), Color(0x00FFB78F)],
-        stops: [0, 0.48, 1],
-      ).createShader(Rect.fromCircle(center: center, radius: size.width * 0.47))
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+    final w = size.width;
+    final h = size.height;
+    final center = Offset(w * 0.5, h * 0.48);
+    final breathing = math.sin(progress * math.pi * 2) * w * 0.006;
 
-    final path = Path();
-    for (var i = 0; i < 42; i++) {
-      final angle = i / 42 * math.pi * 2;
-      final wobble = math.sin(angle * 3 + progress * math.pi * 2) * 6;
-      final radius = size.width * 0.34 + wobble;
-      final point = center + Offset(math.cos(angle), math.sin(angle)) * radius;
-      if (i == 0) {
-        path.moveTo(point.dx, point.dy);
-      } else {
-        path.lineTo(point.dx, point.dy);
-      }
-    }
-    path.close();
-    canvas.drawPath(path, paint);
-
-    final satellite = Paint()
+    final shadow = Paint()
       ..shader =
-          const RadialGradient(
-            colors: [Colors.white, Color(0xFFFFB99A), Color(0x00FFB99A)],
+          const LinearGradient(
+            colors: [
+              Color(0x00FFFFFF),
+              Color(0x33FFA384),
+              Color(0x16F0D2A1),
+              Color(0x00FFFFFF),
+            ],
           ).createShader(
-            Rect.fromCircle(
-              center: Offset(size.width * 0.2, size.height * 0.52),
-              radius: 46,
+            Rect.fromCenter(
+              center: Offset(w * 0.5, h * 0.88),
+              width: w * 0.56,
+              height: h * 0.07,
             ),
           )
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-    canvas.drawCircle(
-      Offset(size.width * 0.2, size.height * 0.52),
-      42,
-      satellite,
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, w * 0.035);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.88),
+        width: w * 0.48,
+        height: h * 0.024,
+      ),
+      shadow,
     );
-    canvas.drawCircle(
-      Offset(size.width * 0.8, size.height * 0.45),
-      42,
-      satellite,
+
+    final bodyRect = Rect.fromCenter(
+      center: center,
+      width: w * 0.62 + breathing,
+      height: h * 0.62 + breathing,
     );
+    final body = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment(0.0, 0.08),
+        radius: 0.62,
+        colors: [
+          Color(0xFFFFF6D8),
+          Color(0xFFFFE0BB),
+          Color(0xFFFFB18E),
+          Color(0x00FFB18E),
+        ],
+        stops: [0.0, 0.46, 0.78, 1.0],
+      ).createShader(bodyRect.inflate(w * 0.06))
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, w * 0.018);
+    canvas.drawOval(bodyRect, body);
+
+    final glow = Paint()
+      ..color = const Color(0xFFFFD6B5).withValues(alpha: 0.22)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, w * 0.055);
+    canvas.drawOval(bodyRect.inflate(w * 0.025), glow);
+
+    _drawSideCaps(canvas, size, breathing);
+    _drawFace(canvas, size);
+  }
+
+  void _drawSideCaps(Canvas canvas, Size size, double breathing) {
+    final w = size.width;
+    final h = size.height;
+    final leftCap = Rect.fromCenter(
+      center: Offset(w * 0.24, h * 0.48),
+      width: w * 0.28 + breathing,
+      height: h * 0.34,
+    );
+    final rightCap = Rect.fromCenter(
+      center: Offset(w * 0.76, h * 0.47),
+      width: w * 0.27 + breathing,
+      height: h * 0.32,
+    );
+
+    final leftPaint = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment(0.25, 0.04),
+        colors: [Color(0xFFFFF2E7), Color(0xFFFFBA99), Color(0x00FFBA99)],
+        stops: [0.0, 0.62, 1.0],
+      ).createShader(leftCap.inflate(w * 0.04))
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, w * 0.015);
+    final rightPaint = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment(-0.12, 0.02),
+        colors: [Color(0xFFFFF2E7), Color(0xFFFFBA99), Color(0x00FFBA99)],
+        stops: [0.0, 0.6, 1.0],
+      ).createShader(rightCap.inflate(w * 0.04))
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, w * 0.015);
+
+    _drawSoftEarEdge(canvas, leftCap, isLeft: true);
+    canvas.drawOval(leftCap, leftPaint);
+    canvas.drawOval(rightCap, rightPaint);
+  }
+
+  void _drawSoftEarEdge(Canvas canvas, Rect cap, {required bool isLeft}) {
+    final clip = Path()..addOval(cap);
+    final edge = Paint()
+      ..color = const Color(0xFF828990).withValues(alpha: 0.36)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = cap.width * 0.035
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, cap.width * 0.012);
+
+    canvas.save();
+    canvas.clipPath(clip);
+    final x = isLeft
+        ? cap.left + cap.width * 0.12
+        : cap.right - cap.width * 0.12;
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(x, cap.center.dy),
+        width: cap.width * 0.72,
+        height: cap.height * 1.02,
+      ),
+      isLeft ? -math.pi / 2 : math.pi / 2,
+      math.pi,
+      false,
+      edge,
+    );
+    canvas.restore();
+  }
+
+  void _drawFace(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final eyePaint = Paint()..color = Colors.white.withValues(alpha: 0.9);
+    final dashW = w * 0.035;
+    final dashH = h * 0.009;
+    final startX = w * 0.285;
+
+    for (final y in [h * 0.438, h * 0.502]) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(startX, y, dashW, dashH),
+          Radius.circular(dashH),
+        ),
+        eyePaint,
+      );
+      canvas.drawCircle(
+        Offset(startX - dashW * 0.38, y + dashH / 2),
+        dashH / 2,
+        eyePaint,
+      );
+    }
   }
 
   @override

@@ -48,7 +48,7 @@ class _MotivationScreenState extends State<MotivationScreen> {
 
   void _finish() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    if (mounted) context.pop();
+    if (mounted) context.go('/client/tunnel/quote');
   }
 
   @override

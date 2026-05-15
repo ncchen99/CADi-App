@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../shared/storage/app_storage.dart';
 import '../../shared/theme/app_theme.dart';
 import '../widgets/client_chrome.dart';
 
@@ -15,6 +19,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pageController = PageController();
   final _textController = TextEditingController();
   int _page = 0;
+  Uint8List? _image;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController.text = AppStorage.onboardingText;
+    _image = AppStorage.onboardingImage;
+  }
 
   void _goNext() {
     if (_page < 3) {
@@ -23,19 +35,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeOutCubic,
       );
     } else {
-      context.go('/client');
+      AppStorage.setOnboardingDone(true);
+      context.go('/client/onboarding/gallery');
     }
   }
 
   void _goBack() {
     if (_page == 0) {
-      context.go('/mode-select');
+      context.go('/client/onboarding/intro');
     } else {
       _pageController.previousPage(
         duration: const Duration(milliseconds: 340),
         curve: Curves.easeOutCubic,
       );
     }
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery);
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    await AppStorage.setOnboardingImage(bytes);
+    if (!mounted) return;
+    setState(() => _image = bytes);
+    _goNext();
+  }
+
+  Future<void> _submitText() async {
+    await AppStorage.setOnboardingText(_textController.text.trim());
+    _goNext();
+  }
+
+  Future<void> _pickTag(String tag) async {
+    await AppStorage.setOnboardingTag(tag);
+    _goNext();
   }
 
   @override
@@ -54,9 +88,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         onPageChanged: (page) => setState(() => _page = page),
         children: [
           _QuestionStep(onTap: _goNext),
-          _UploadStep(onTap: _goNext),
-          _ExplainStep(controller: _textController, onSend: _goNext),
-          _EmotionTagsStep(onBack: _goBack, onDone: _goNext),
+          _UploadStep(onTap: _pickImage, preview: _image),
+          _ExplainStep(controller: _textController, onSend: _submitText),
+          _EmotionTagsStep(onBack: _goBack, onPick: _pickTag),
         ],
       ),
     );
@@ -90,8 +124,9 @@ class _QuestionStep extends StatelessWidget {
 
 class _UploadStep extends StatelessWidget {
   final VoidCallback onTap;
+  final Uint8List? preview;
 
-  const _UploadStep({required this.onTap});
+  const _UploadStep({required this.onTap, this.preview});
 
   @override
   Widget build(BuildContext context) {
@@ -102,12 +137,29 @@ class _UploadStep extends StatelessWidget {
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 50),
-                child: Text(
-                  '上傳符合這個想像的圖片',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.heading1(
-                    context,
-                  ).copyWith(fontSize: 16, fontWeight: FontWeight.w400),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '上傳符合這個想像的圖片',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.heading1(
+                        context,
+                      ).copyWith(fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                    if (preview != null) ...[
+                      const SizedBox(height: 28),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.memory(
+                          preview!,
+                          width: 180,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
@@ -116,7 +168,10 @@ class _UploadStep extends StatelessWidget {
               right: 0,
               bottom: 118,
               child: Center(
-                child: CadiPrimaryPill(label: '上傳', onTap: onTap),
+                child: CadiPrimaryPill(
+                  label: preview == null ? '上傳' : '重新上傳',
+                  onTap: onTap,
+                ),
               ),
             ),
           ],
@@ -169,9 +224,9 @@ class _ExplainStep extends StatelessWidget {
 
 class _EmotionTagsStep extends StatelessWidget {
   final VoidCallback onBack;
-  final VoidCallback onDone;
+  final ValueChanged<String> onPick;
 
-  const _EmotionTagsStep({required this.onBack, required this.onDone});
+  const _EmotionTagsStep({required this.onBack, required this.onPick});
 
   static const _tags = [
     _TagData('向上爬升', [
@@ -217,7 +272,10 @@ class _EmotionTagsStep extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: _tags
-                    .map((tag) => _ImageTag(tag: tag, onTap: onDone))
+                    .map((tag) => _ImageTag(
+                          tag: tag,
+                          onTap: () => onPick(tag.label),
+                        ))
                     .toList(),
               ),
             ),

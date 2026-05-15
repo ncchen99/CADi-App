@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../shared/storage/app_storage.dart';
 import '../../shared/theme/app_theme.dart';
 import '../widgets/client_chrome.dart';
 
@@ -12,7 +13,7 @@ class MoodCheckinScreen extends StatefulWidget {
 }
 
 class _MoodCheckinScreenState extends State<MoodCheckinScreen> {
-  int _selected = 1;
+  int _selected = AppStorage.moodIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,6 @@ class _MoodCheckinScreenState extends State<MoodCheckinScreen> {
           child: SafeArea(
             child: Stack(
               children: [
-                Positioned(
-                  top: 12,
-                  left: 8,
-                  child: ClientBackButton(onTap: () => context.go('/client')),
-                ),
                 Positioned(
                   top: 176,
                   left: 0,
@@ -73,26 +69,7 @@ class _MoodCheckinScreenState extends State<MoodCheckinScreen> {
                   child: Center(
                     child: GestureDetector(
                       onTap: () => context.go('/client/chat'),
-                      child: const OrganicMoodOrb(size: 196),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 160,
-                  child: Container(
-                    height: 16,
-                    margin: const EdgeInsets.symmetric(horizontal: 130),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x33FFB08A),
-                          blurRadius: 18,
-                          spreadRadius: 6,
-                        ),
-                      ],
+                      child: const OrganicMoodOrb(size: 210),
                     ),
                   ),
                 ),
@@ -110,6 +87,7 @@ class _MoodCheckinScreenState extends State<MoodCheckinScreen> {
                       ],
                       onTap: (index) {
                         setState(() => _selected = index);
+                        AppStorage.setMoodIndex(index);
                         if (index == 0) context.go('/client/chat');
                         if (index == 2) context.go('/client/life-story');
                       },

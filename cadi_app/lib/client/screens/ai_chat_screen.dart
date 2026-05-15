@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../shared/storage/app_storage.dart';
 import '../../shared/theme/app_theme.dart';
 import '../widgets/client_chrome.dart';
 
@@ -15,8 +16,10 @@ class _Message {
 
 class AiChatScreen extends StatefulWidget {
   final ChatMode mode;
+  // C8/F3 = false (剛開始), C9/F4 = true (已經開始)
+  final bool started;
 
-  const AiChatScreen({super.key, required this.mode});
+  const AiChatScreen({super.key, required this.mode, this.started = true});
 
   @override
   State<AiChatScreen> createState() => _AiChatScreenState();
@@ -24,13 +27,45 @@ class AiChatScreen extends StatefulWidget {
 
 class _AiChatScreenState extends State<AiChatScreen> {
   final _inputController = TextEditingController();
-  final List<_Message> _messages = const [
+  late final String _modeKey = widget.mode == ChatMode.client
+      ? 'client'
+      : 'family';
+  late List<_Message> _messages;
+
+  static const _seedStarted = [
     _Message('那是因為他以前喜歡在這個時\n間買菜', isUser: false),
     _Message('那他為什麼喜歡買菜', isUser: true),
     _Message('他之前有習慣每週煮給家人', isUser: false),
     _Message('那我要怎麼避免', isUser: true),
     _Message('你可以先把菜園收好不能使找到，\n這樣他就比較難發現。', isUser: false),
-  ].toList();
+  ];
+
+  static const _seedNew = [
+    _Message('我可以怎麼幫忙?', isUser: true),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    final stored = AppStorage.loadChat(_modeKey);
+    if (stored.isNotEmpty) {
+      _messages = stored
+          .map((r) => _Message(r.text, isUser: r.isUser))
+          .toList();
+    } else {
+      _messages = List.of(widget.started ? _seedStarted : _seedNew);
+      _persist();
+    }
+  }
+
+  void _persist() {
+    AppStorage.saveChat(
+      _modeKey,
+      _messages
+          .map((m) => ChatRecord(text: m.text, isUser: m.isUser))
+          .toList(),
+    );
+  }
 
   void _send() {
     final text = _inputController.text.trim();
@@ -39,6 +74,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
       _messages.add(_Message(text, isUser: true));
       _inputController.clear();
     });
+    _persist();
   }
 
   @override

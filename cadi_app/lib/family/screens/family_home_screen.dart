@@ -41,9 +41,30 @@ class _FamilyHomeScreenState extends State<FamilyHomeScreen> {
   }
 }
 
-// ── Tab 0: Home (Figma 158:650) ──
-class _HomeTab extends StatelessWidget {
+// ── Tab 0: Home (Figma 1:61 — 家屬主頁面) ──
+// 情緒、位置、幾分鐘前偵測 (1:71);按鈕是滑動的 (1:72) — 上滑進指北針
+class _HomeTab extends StatefulWidget {
   const _HomeTab();
+
+  @override
+  State<_HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<_HomeTab> {
+  double _dragOffset = 0;
+
+  void _handleDragUpdate(DragUpdateDetails d) {
+    setState(() {
+      _dragOffset = (_dragOffset + d.delta.dy).clamp(-160.0, 0.0);
+    });
+  }
+
+  void _handleDragEnd(DragEndDetails _) {
+    if (_dragOffset < -80) {
+      context.push('/family/compass');
+    }
+    setState(() => _dragOffset = 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +78,9 @@ class _HomeTab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
                 Text(
-                  'Hi 👋',
+                  'Hi',
                   style: TextStyle(
                     fontSize: 44,
                     fontWeight: FontWeight.w800,
@@ -67,33 +88,37 @@ class _HomeTab extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 500.ms),
                 const SizedBox(height: 4),
-                Text(
-                  '今天，您的家人還好嗎？',
-                  style: AppTextStyles.heading2(context),
-                ).animate().fadeIn(delay: 150.ms),
-                const SizedBox(height: 40),
-                // CADI robot — Figma Node 158:650 (Group 129, 3D robot model)
+                Text('今天的家人狀態',
+                        style: AppTextStyles.heading2(context))
+                    .animate()
+                    .fadeIn(delay: 150.ms),
+                const SizedBox(height: 20),
+                _PatientInfoRow(
+                  emotion: '平靜',
+                  location: '客廳',
+                  detectedMinutesAgo: 3,
+                ).animate().fadeIn(delay: 250.ms),
+                const SizedBox(height: 12),
                 Center(
                   child: Container(
-                    width: size.width * 0.55,
-                    height: size.width * 0.55,
+                    width: size.width * 0.5,
+                    height: size.width * 0.5,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.glowBlue.withOpacity(0.25),
+                      color: AppColors.glowBlue.withValues(alpha: 0.25),
                     ),
                     child: const Icon(
                       Icons.smart_toy_rounded,
-                      size: 88,
+                      size: 80,
                       color: AppColors.glowBlue,
                     ),
                   ).animate().scale(
-                    begin: const Offset(0.85, 0.85),
-                    duration: 700.ms,
-                    curve: Curves.elasticOut,
-                  ),
+                        begin: const Offset(0.85, 0.85),
+                        duration: 700.ms,
+                        curve: Curves.elasticOut,
+                      ),
                 ),
-                const SizedBox(height: 36),
-                // Quick actions
+                const SizedBox(height: 18),
                 _QuickActionCard(
                   title: '查看家人狀態',
                   subtitle: '情緒、位置、最後更新時間',
@@ -107,15 +132,124 @@ class _HomeTab extends StatelessWidget {
                   subtitle: '家人留給你的私人信件',
                   icon: Icons.mail_rounded,
                   color: AppColors.glowPeach,
-                  onTap: () => context.go('/family/letter'),
+                  onTap: () => context.go('/family/letter/notify'),
                 ).animate().fadeIn(delay: 400.ms),
               ],
+            ),
+          ),
+        ),
+        // 滑動式底部按鈕 — 上滑進指北針
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 24,
+          child: Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onVerticalDragUpdate: _handleDragUpdate,
+              onVerticalDragEnd: _handleDragEnd,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                transform:
+                    Matrix4.translationValues(0, _dragOffset, 0),
+                child: Container(
+                  width: 160,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x1F000000),
+                        blurRadius: 12,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.keyboard_arrow_up_rounded,
+                          color: AppColors.glowBlue),
+                      const SizedBox(width: 6),
+                      Text('上滑進指北針',
+                          style: AppTextStyles.body(context)),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
       ],
     );
   }
+}
+
+class _PatientInfoRow extends StatelessWidget {
+  final String emotion;
+  final String location;
+  final int detectedMinutesAgo;
+  const _PatientInfoRow({
+    required this.emotion,
+    required this.location,
+    required this.detectedMinutesAgo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          _InfoItem(
+              icon: Icons.mood_rounded, label: '情緒', value: emotion),
+          _InfoDivider(),
+          _InfoItem(
+              icon: Icons.place_outlined, label: '位置', value: location),
+          _InfoDivider(),
+          _InfoItem(
+              icon: Icons.schedule_rounded,
+              label: '偵測',
+              value: '$detectedMinutesAgo 分前'),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  const _InfoItem(
+      {required this.icon, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, size: 18, color: AppColors.glowBlue),
+          const SizedBox(height: 4),
+          Text(label, style: AppTextStyles.caption(context)),
+          Text(value,
+              style: AppTextStyles.body(context)
+                  .copyWith(fontWeight: FontWeight.w700)),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+      Container(width: 1, height: 32, color: AppColors.divider);
 }
 
 class _QuickActionCard extends StatelessWidget {
