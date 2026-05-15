@@ -24,11 +24,7 @@ class _FamilyHomeScreenState extends State<FamilyHomeScreen> {
       extendBody: true,
       body: IndexedStack(
         index: _tabIndex,
-        children: const [
-          _HomeTab(),
-          _PhotosTab(),
-          _ChatTabStub(),
-        ],
+        children: const [_HomeTab(), _PhotosTab(), _ChatTabStub()],
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
@@ -189,8 +185,10 @@ class _SwipeControl extends StatelessWidget {
           children: [
             const Icon(Icons.location_on_outlined, color: Color(0xFF6EA6C9)),
             const SizedBox(width: 30),
-            const Icon(Icons.chat_bubble_outline_rounded,
-                color: Color(0xFF6EA6C9)),
+            const Icon(
+              Icons.chat_bubble_outline_rounded,
+              color: Color(0xFF6EA6C9),
+            ),
           ],
         ),
       ),
@@ -230,10 +228,9 @@ class _HomeAction extends StatelessWidget {
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption(context).copyWith(
-                  color: AppColors.primaryText,
-                  fontSize: 12,
-                ),
+                style: AppTextStyles.caption(
+                  context,
+                ).copyWith(color: AppColors.primaryText, fontSize: 12),
               ),
             ),
           ],

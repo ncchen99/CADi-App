@@ -34,15 +34,14 @@ class FamilyLetterNotifyScreen extends StatelessWidget {
                           size: 38,
                         ),
                         const SizedBox(height: 18),
-                        Text(
-                          '患者想念你',
-                          style: AppTextStyles.heading1(context),
-                        ),
+                        Text('患者想念你', style: AppTextStyles.heading1(context)),
                         const SizedBox(height: 8),
                         Text(
                           '患者今天的心情有些低落，留了一段話想給你。',
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.body(context).copyWith(fontSize: 13),
+                          style: AppTextStyles.body(
+                            context,
+                          ).copyWith(fontSize: 13),
                         ),
                       ],
                     ),
@@ -90,18 +89,16 @@ class FamilyEnvelopeScreen extends StatelessWidget {
                       ],
                     ),
                     child: CustomPaint(painter: _EnvelopePainter()),
-                  )
-                      .animate()
-                      .fadeIn()
-                      .scale(
-                        begin: const Offset(0.82, 0.82),
-                        curve: Curves.easeOutBack,
-                        duration: 650.ms,
-                      ),
+                  ).animate().fadeIn().scale(
+                    begin: const Offset(0.82, 0.82),
+                    curve: Curves.easeOutBack,
+                    duration: 650.ms,
+                  ),
                   const SizedBox(height: 34),
-                  Text('有一封信給你', style: AppTextStyles.heading1(context))
-                      .animate()
-                      .fadeIn(delay: 360.ms),
+                  Text(
+                    '有一封信給你',
+                    style: AppTextStyles.heading1(context),
+                  ).animate().fadeIn(delay: 360.ms),
                 ],
               ),
             ),
@@ -123,27 +120,30 @@ class FamilyLetterGlowScreen extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: () => context.push('/family/letter/gradient'),
         child: Center(
-          child: Container(
-            width: 220,
-            height: 220,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  Color(0xFFFFFFFF),
-                  Color(0xFFFFC5AA),
-                  Color(0x00FFC5AA),
-                ],
-                stops: [0, 0.46, 1],
-              ),
-            ),
-          )
-              .animate(onPlay: (controller) => controller.repeat(reverse: true))
-              .scale(
-                begin: const Offset(0.9, 0.9),
-                end: const Offset(1.08, 1.08),
-                duration: 1500.ms,
-              ),
+          child:
+              Container(
+                    width: 220,
+                    height: 220,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          Color(0xFFFFFFFF),
+                          Color(0xFFFFC5AA),
+                          Color(0x00FFC5AA),
+                        ],
+                        stops: [0, 0.46, 1],
+                      ),
+                    ),
+                  )
+                  .animate(
+                    onPlay: (controller) => controller.repeat(reverse: true),
+                  )
+                  .scale(
+                    begin: const Offset(0.9, 0.9),
+                    end: const Offset(1.08, 1.08),
+                    duration: 1500.ms,
+                  ),
         ),
       ),
     );
@@ -224,16 +224,17 @@ class FamilyLetterContentScreen extends StatelessWidget {
                           const SizedBox(height: 30),
                           Text(
                             _text,
-                            style: AppTextStyles.body(context).copyWith(
-                              height: 2.05,
-                              fontSize: 15,
-                            ),
+                            style: AppTextStyles.body(
+                              context,
+                            ).copyWith(height: 2.05, fontSize: 15),
                           ).animate().fadeIn(duration: 700.ms),
                           const SizedBox(height: 28),
                           Center(
                             child: TextButton.icon(
                               onPressed: () => context.go('/family/video/list'),
-                              icon: const Icon(Icons.play_circle_outline_rounded),
+                              icon: const Icon(
+                                Icons.play_circle_outline_rounded,
+                              ),
                               label: const Text('看患者留下的影片'),
                               style: TextButton.styleFrom(
                                 foregroundColor: AppColors.peach,

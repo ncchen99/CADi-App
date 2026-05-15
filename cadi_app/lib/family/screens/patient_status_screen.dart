@@ -35,7 +35,9 @@ class PatientStatusScreen extends StatelessWidget {
                       const SizedBox(height: 6),
                       Text(
                         '今天患者感覺怎麼樣',
-                        style: AppTextStyles.body(context).copyWith(fontSize: 13),
+                        style: AppTextStyles.body(
+                          context,
+                        ).copyWith(fontSize: 13),
                       ),
                       const SizedBox(height: 30),
                       const CadiSoftBot(size: 164),
@@ -72,7 +74,10 @@ class PatientStatusScreen extends StatelessWidget {
                   height: 54,
                   child: FilledButton.icon(
                     onPressed: () => context.go('/family/chat'),
-                    icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+                    icon: const Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 18,
+                    ),
                     label: const Text('詢問 CADi 照護建議'),
                     style: FilledButton.styleFrom(
                       elevation: 0,
@@ -128,10 +133,9 @@ class _StatusTile extends StatelessWidget {
           ),
           Text(
             value,
-            style: AppTextStyles.body(context).copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.body(
+              context,
+            ).copyWith(fontSize: 13, fontWeight: FontWeight.w600),
           ),
         ],
       ),

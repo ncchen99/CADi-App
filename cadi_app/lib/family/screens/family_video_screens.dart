@@ -27,12 +27,13 @@ class FamilyVideoListScreen extends StatelessWidget {
                 Expanded(
                   child: GridView.builder(
                     physics: const BouncingScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.68,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.68,
+                        ),
                     itemCount: 6,
                     itemBuilder: (context, index) {
                       final horizontal = index.isEven;

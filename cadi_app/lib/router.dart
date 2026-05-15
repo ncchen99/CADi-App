@@ -30,22 +30,14 @@ final router = GoRouter(
     if (state.matchedLocation != '/') return null;
     final mode = AppStorage.lastMode;
     if (mode == 'client') {
-      return AppStorage.onboardingDone
-          ? '/client'
-          : '/client/onboarding/intro';
+      return AppStorage.onboardingDone ? '/client' : '/client/onboarding/intro';
     }
     if (mode == 'family') return '/family/splash';
     return '/mode-select';
   },
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (_, __) => const SizedBox.shrink(),
-    ),
-    GoRoute(
-      path: '/mode-select',
-      builder: (_, __) => const ModeSelectScreen(),
-    ),
+    GoRoute(path: '/', builder: (_, __) => const SizedBox.shrink()),
+    GoRoute(path: '/mode-select', builder: (_, __) => const ModeSelectScreen()),
 
     // ── CLIENT ──────────────────────────────────────
     GoRoute(
@@ -68,10 +60,7 @@ final router = GoRouter(
       path: '/client', // C6
       builder: (_, __) => const ClientHomeScreen(),
       routes: [
-        GoRoute(
-          path: 'mood',
-          builder: (_, __) => const MoodCheckinScreen(),
-        ),
+        GoRoute(path: 'mood', builder: (_, __) => const MoodCheckinScreen()),
         GoRoute(
           path: 'chat', // C9 已開始
           builder: (_, __) =>
@@ -329,10 +318,7 @@ class _ModeCard extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               child: Icon(icon, size: 28, color: Colors.white),
             ),
             const SizedBox(width: 16),
@@ -357,8 +343,11 @@ class _ModeCard extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios_rounded,
-                size: 16, color: Color(0xFF7A7A7A)),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: Color(0xFF7A7A7A),
+            ),
           ],
         ),
       ),

@@ -11,7 +11,11 @@ import '../widgets/client_chrome.dart';
 class CompassScreen extends StatefulWidget {
   final bool variant; // false = C11, true = C12
   final bool familyMode; // F2 重用
-  const CompassScreen({super.key, this.variant = false, this.familyMode = false});
+  const CompassScreen({
+    super.key,
+    this.variant = false,
+    this.familyMode = false,
+  });
 
   @override
   State<CompassScreen> createState() => _CompassScreenState();
@@ -119,8 +123,11 @@ class _CompassPainter extends CustomPainter {
   final bool variant;
   final bool familyMode;
 
-  _CompassPainter(
-      {required this.angle, required this.variant, required this.familyMode});
+  _CompassPainter({
+    required this.angle,
+    required this.variant,
+    required this.familyMode,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -151,9 +158,12 @@ class _CompassPainter extends CustomPainter {
 
     // needle pointing
     final needleAngle = variant ? angle * 0.3 : angle;
-    final tip = center +
-        Offset(math.cos(needleAngle - math.pi / 2),
-                math.sin(needleAngle - math.pi / 2)) *
+    final tip =
+        center +
+        Offset(
+              math.cos(needleAngle - math.pi / 2),
+              math.sin(needleAngle - math.pi / 2),
+            ) *
             (r * 0.6);
     final needle = Paint()
       ..color = AppColors.peach

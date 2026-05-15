@@ -40,9 +40,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
     _Message('你可以先把菜園收好不能使找到，\n這樣他就比較難發現。', isUser: false),
   ];
 
-  static const _seedNew = [
-    _Message('我可以怎麼幫忙?', isUser: true),
-  ];
+  static const _seedNew = [_Message('我可以怎麼幫忙?', isUser: true)];
 
   @override
   void initState() {
@@ -61,9 +59,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
   void _persist() {
     AppStorage.saveChat(
       _modeKey,
-      _messages
-          .map((m) => ChatRecord(text: m.text, isUser: m.isUser))
-          .toList(),
+      _messages.map((m) => ChatRecord(text: m.text, isUser: m.isUser)).toList(),
     );
   }
 
@@ -156,6 +152,9 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   onSend: _send,
                   hintText: '',
                   showPlus: true,
+                  accentColor: widget.mode == ChatMode.client
+                      ? AppColors.peach
+                      : const Color(0xFF6EA6C9),
                 ),
               ),
             ],

@@ -22,16 +22,8 @@ class FamilySoftBackground extends StatelessWidget {
           begin: Alignment.topRight,
           end: Alignment.bottomCenter,
           colors: warm
-              ? const [
-                  Color(0xFFFFE8D9),
-                  Color(0xFFFFF8EF),
-                  Color(0xFFFFFFFF),
-                ]
-              : const [
-                  Color(0xFFF5F2FF),
-                  Color(0xFFF5FAFF),
-                  Color(0xFFFFFFFF),
-                ],
+              ? const [Color(0xFFFFE8D9), Color(0xFFFFF8EF), Color(0xFFFFFFFF)]
+              : const [Color(0xFFF5F2FF), Color(0xFFF5FAFF), Color(0xFFFFFFFF)],
           stops: const [0, 0.48, 1],
         ),
       ),
@@ -56,10 +48,7 @@ class FamilyTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ClientBackButton(
-          color: color,
-          onTap: onBack ?? () => context.pop(),
-        ),
+        ClientBackButton(color: color, onTap: onBack ?? () => context.pop()),
         const Spacer(),
         if (tools) ...[
           Icon(Icons.search_rounded, size: 21, color: color),
@@ -159,10 +148,9 @@ class _PillItem extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           text,
-          style: AppTextStyles.caption(context).copyWith(
-            color: AppColors.primaryText,
-            fontSize: 10,
-          ),
+          style: AppTextStyles.caption(
+            context,
+          ).copyWith(color: AppColors.primaryText, fontSize: 10),
         ),
       ],
     );
@@ -195,7 +183,9 @@ class FamilyVideoStill extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Align(
-            alignment: horizontal ? Alignment.centerRight : Alignment.bottomCenter,
+            alignment: horizontal
+                ? Alignment.centerRight
+                : Alignment.bottomCenter,
             child: FractionallySizedBox(
               widthFactor: horizontal ? 0.34 : 0.7,
               heightFactor: horizontal ? 0.92 : 0.62,

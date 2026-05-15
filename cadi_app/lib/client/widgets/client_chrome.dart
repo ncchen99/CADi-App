@@ -128,6 +128,7 @@ class CadiInputPill extends StatelessWidget {
   final String? hintText;
   final bool showMic;
   final bool showPlus;
+  final Color accentColor;
 
   const CadiInputPill({
     super.key,
@@ -136,6 +137,7 @@ class CadiInputPill extends StatelessWidget {
     this.hintText,
     this.showMic = true,
     this.showPlus = false,
+    this.accentColor = AppColors.peach,
   });
 
   @override
@@ -158,11 +160,7 @@ class CadiInputPill extends StatelessWidget {
       child: Row(
         children: [
           if (showPlus) ...[
-            const Icon(
-              Icons.add_circle_rounded,
-              color: AppColors.peach,
-              size: 24,
-            ),
+            Icon(Icons.add_circle_rounded, color: accentColor, size: 24),
             const SizedBox(width: 8),
           ],
           Expanded(
@@ -184,19 +182,15 @@ class CadiInputPill extends StatelessWidget {
             ),
           ),
           if (showMic) ...[
-            const Icon(
-              Icons.mic_none_rounded,
-              color: AppColors.peach,
-              size: 24,
-            ),
+            Icon(Icons.mic_none_rounded, color: accentColor, size: 24),
             const SizedBox(width: 12),
           ],
           GestureDetector(
             onTap: onSend,
-            child: const CircleAvatar(
+            child: CircleAvatar(
               radius: 16,
-              backgroundColor: AppColors.peach,
-              child: Icon(
+              backgroundColor: accentColor,
+              child: const Icon(
                 Icons.navigation_rounded,
                 color: Colors.white,
                 size: 16,
@@ -229,12 +223,14 @@ class CadiFloatingNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final List<IconData> icons;
+  final Color activeColor;
 
   const CadiFloatingNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
     required this.icons,
+    this.activeColor = AppColors.peach,
   });
 
   @override
@@ -281,7 +277,7 @@ class CadiFloatingNav extends StatelessWidget {
               ),
               child: Icon(
                 icons[index],
-                color: AppColors.peach,
+                color: activeColor,
                 size: selected ? 26 : 23,
               ),
             ),

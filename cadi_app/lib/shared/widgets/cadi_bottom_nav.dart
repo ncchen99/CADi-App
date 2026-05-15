@@ -19,6 +19,9 @@ class CadiBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final icons = mode == AppMode.client ? _clientIcons : _familyIcons;
+    final activeColor = mode == AppMode.client
+        ? const Color(0xFFFF9F7B)
+        : const Color(0xFF6EA6C9);
     return SafeArea(
       top: false,
       child: Padding(
@@ -28,6 +31,7 @@ class CadiBottomNav extends StatelessWidget {
           child: CadiFloatingNav(
             currentIndex: currentIndex,
             icons: icons,
+            activeColor: activeColor,
             onTap: onTap,
           ),
         ),
