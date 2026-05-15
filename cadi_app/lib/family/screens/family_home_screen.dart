@@ -79,7 +79,7 @@ class _HomeTabState extends State<_HomeTab> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CadiTinyMark(size: 18),
+                      const CadiTinyMark(size: 18, color: Color(0xFF6EA6C9)),
                       const SizedBox(width: 8),
                       Text(
                         'Hi',
@@ -246,7 +246,6 @@ class _PhotosTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FamilySoftBackground(
-      warm: true,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 22, 24, 116),

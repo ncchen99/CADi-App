@@ -77,14 +77,15 @@ class CadiWordmark extends StatelessWidget {
 
 class CadiTinyMark extends StatelessWidget {
   final double size;
+  final Color color;
 
-  const CadiTinyMark({super.key, this.size = 18});
+  const CadiTinyMark({super.key, this.size = 18, this.color = AppColors.peach});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
       dimension: size,
-      child: CustomPaint(painter: _TinyMarkPainter()),
+      child: CustomPaint(painter: _TinyMarkPainter(color: color)),
     );
   }
 }
@@ -289,18 +290,23 @@ class CadiFloatingNav extends StatelessWidget {
 }
 
 class _TinyMarkPainter extends CustomPainter {
+  final Color color;
+
+  _TinyMarkPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.13
-      ..color = AppColors.peach;
+      ..color = color;
     canvas.drawCircle(size.center(Offset.zero), size.width * 0.32, paint);
     canvas.drawCircle(size.center(Offset.zero), size.width * 0.1, paint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _TinyMarkPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _BotPainter extends CustomPainter {

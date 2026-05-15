@@ -30,7 +30,7 @@ class FamilyLetterNotifyScreen extends StatelessWidget {
                       children: [
                         const Icon(
                           Icons.favorite_rounded,
-                          color: AppColors.peach,
+                          color: Color(0xFF6EA6C9),
                           size: 38,
                         ),
                         const SizedBox(height: 18),
@@ -237,7 +237,7 @@ class FamilyLetterContentScreen extends StatelessWidget {
                               ),
                               label: const Text('看患者留下的影片'),
                               style: TextButton.styleFrom(
-                                foregroundColor: AppColors.peach,
+                                foregroundColor: const Color(0xFF6EA6C9),
                               ),
                             ),
                           ),
@@ -259,7 +259,7 @@ class _EnvelopePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final border = Paint()
-      ..color = AppColors.peach.withValues(alpha: 0.34)
+      ..color = const Color(0xFF6EA6C9).withValues(alpha: 0.34)
       ..strokeWidth = 1.4
       ..style = PaintingStyle.stroke;
     final flap = Path()
