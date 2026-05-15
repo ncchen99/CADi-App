@@ -1,8 +1,9 @@
-// Figma: 1:1020 (來自病人的信)
+// Figma: 1:1020 (來自患者的信)
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../shared/theme/app_theme.dart';
+import '../widgets/family_chrome.dart';
 
 class PatientLetterScreen extends StatelessWidget {
   const PatientLetterScreen({super.key});
@@ -22,68 +23,61 @@ class PatientLetterScreen extends StatelessWidget {
 
 請你也好好照顧自己。你不需要做到完美，只要你在，就已經足夠了。
 
-                                      永遠愛你的家人''';
+                                      永遠愛你的患者''';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFAF5),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFAF5),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('來自家人的信',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-      ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(28, 16, 28, 60),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Decorative envelope icon
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.glowPeach.withOpacity(0.4),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.mail_rounded,
-                      size: 36, color: Color(0xFFC97B4B)),
-                ).animate().scale(
-                  begin: const Offset(0.7, 0.7),
-                  duration: 600.ms,
-                  curve: Curves.elasticOut,
-                ),
-              ),
-              const SizedBox(height: 32),
-              // Letter text — Figma 1:1020
-              Text(
-                _letterText,
-                style: const TextStyle(
-                  fontSize: 16,
-                  height: 2.0,
-                  color: AppColors.primaryText,
-                  letterSpacing: 0.3,
-                ),
-              ).animate().fadeIn(delay: 300.ms, duration: 800.ms),
-              const SizedBox(height: 40),
-              // Subtle divider
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 2,
-                  decoration: BoxDecoration(
-                    color: AppColors.divider,
-                    borderRadius: BorderRadius.circular(1),
+      body: FamilySoftBackground(
+        warm: true,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
+            child: Column(
+              children: [
+                FamilyTopBar(onBack: () => context.pop()),
+                const SizedBox(height: 18),
+                Expanded(
+                  child: FamilyPanel(
+                    padding: const EdgeInsets.fromLTRB(28, 34, 28, 30),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              '來自患者的信',
+                              style: AppTextStyles.heading1(context),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Text(
+                            _letterText,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              height: 2.0,
+                              color: AppColors.primaryText,
+                            ),
+                          ).animate().fadeIn(delay: 220.ms, duration: 700.ms),
+                          const SizedBox(height: 34),
+                          Center(
+                            child: Container(
+                              width: 40,
+                              height: 2,
+                              decoration: BoxDecoration(
+                                color: AppColors.divider,
+                                borderRadius: BorderRadius.circular(1),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

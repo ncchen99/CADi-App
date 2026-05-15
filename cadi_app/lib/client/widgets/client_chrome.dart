@@ -29,10 +29,10 @@ class ClientGradientBackground extends StatelessWidget {
                   Color(0xFFFFFFFF),
                 ]
               : const [
-                  Color(0xFFFFD7C7),
-                  Color(0xFFFFF4E7),
+                  Color(0xFFF5F2FF),
+                  Color(0xFFF5FAFF),
                   Color(0xFFFFFFFF),
-                  Color(0xFFFFFCF8),
+                  Color(0xFFFFFFFF),
                 ],
           stops: const [0, 0.34, 0.67, 1],
         ),

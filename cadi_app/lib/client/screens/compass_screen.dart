@@ -43,6 +43,7 @@ class _CompassScreenState extends State<CompassScreen>
     final backPath = widget.familyMode ? '/family' : '/client';
     return Scaffold(
       body: ClientGradientBackground(
+        peachOnly: !widget.familyMode,
         child: SafeArea(
           child: GestureDetector(
             onHorizontalDragEnd: (_) {

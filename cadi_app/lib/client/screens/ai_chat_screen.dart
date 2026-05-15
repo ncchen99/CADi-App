@@ -88,13 +88,18 @@ class _AiChatScreenState extends State<AiChatScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: ClientGradientBackground(
+        peachOnly: widget.mode == ChatMode.client,
         child: SafeArea(
           child: Stack(
             children: [
               Positioned(
                 top: 12,
                 left: 8,
-                child: ClientBackButton(onTap: () => context.go('/client')),
+                child: ClientBackButton(
+                  onTap: () => context.go(
+                    widget.mode == ChatMode.client ? '/client' : '/family',
+                  ),
+                ),
               ),
               Positioned(
                 top: 18,
@@ -124,7 +129,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
                 child: _PromptCard(
                   text: widget.mode == ChatMode.client
                       ? '你可以把電鍋的線拔掉，讓他不知道電\n鍋沒電，或是把開關得只是換掉'
-                      : '你可以先記下今天的狀態，晚一點再和家人確認。',
+                      : '你可以先記下今天的狀態，晚一點再和患者確認。',
                 ),
               ),
               Positioned.fill(

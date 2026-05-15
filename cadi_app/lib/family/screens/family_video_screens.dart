@@ -1,97 +1,77 @@
-// F10–F12 被照顧者影片回放
-// F10 1:66 影片清單, F11 1:57 直式, F12 1:68 橫式
+// F10-F12 患者影片回放
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../shared/theme/app_theme.dart';
+import '../widgets/family_chrome.dart';
 
-// ── F10 被照顧者的影片 (1:66) ──
 class FamilyVideoListScreen extends StatelessWidget {
   const FamilyVideoListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFAF5),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFAF5),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => context.go('/family'),
-        ),
-        title: const Text('家人的影片',
-            style:
-                TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 0.7,
-        ),
-        itemCount: 6,
-        itemBuilder: (context, i) {
-          final horizontal = i.isEven;
-          return GestureDetector(
-            onTap: () => context.push(horizontal
-                ? '/family/video/horizontal'
-                : '/family/video/vertical'),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color.lerp(AppColors.peach, Colors.white,
-                              (i % 3) / 3)!,
-                          AppColors.peachLight,
-                        ],
-                      ),
+      body: FamilySoftBackground(
+        warm: true,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FamilyTopBar(onBack: () => context.go('/family')),
+                const SizedBox(height: 14),
+                Text('患者的影片', style: AppTextStyles.heading1(context)),
+                const SizedBox(height: 18),
+                Expanded(
+                  child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.68,
                     ),
+                    itemCount: 6,
+                    itemBuilder: (context, index) {
+                      final horizontal = index.isEven;
+                      return GestureDetector(
+                        onTap: () => context.push(
+                          horizontal
+                              ? '/family/video/horizontal'
+                              : '/family/video/vertical',
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              FamilyVideoStill(horizontal: horizontal),
+                              Positioned(
+                                left: 10,
+                                bottom: 10,
+                                child: _DateStamp(
+                                  text:
+                                      '2026.05.${(index + 9).toString().padLeft(2, '0')}',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  const Center(
-                    child: Icon(Icons.play_circle_fill_rounded,
-                        color: Colors.white70, size: 48),
-                  ),
-                  // 相機風日期 (1:83)
-                  Positioned(
-                    left: 10,
-                    bottom: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.45),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        '2025.05.${(i + 1).toString().padLeft(2, '0')}',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                            letterSpacing: 1.2),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 }
 
-// ── F11 直式影片-家屬 (1:57) ──
 class FamilyVerticalVideoScreen extends StatelessWidget {
   const FamilyVerticalVideoScreen({super.key});
 
@@ -102,50 +82,20 @@ class FamilyVerticalVideoScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFF1F1F1F), Color(0xFF000000)],
-                  ),
-                ),
-              ),
-            ),
-            const Center(
-              child: Icon(Icons.play_arrow_rounded,
-                  size: 96, color: Colors.white70),
-            ),
+            const Positioned.fill(child: FamilyVideoStill(dark: true)),
             Positioned(
-              top: 12,
+              top: 8,
               left: 8,
               child: IconButton(
                 icon: const Icon(Icons.close_rounded, color: Colors.white),
                 onPressed: () => context.pop(),
               ),
             ),
-            Positioned(
+            const Positioned(
               left: 0,
               right: 0,
-              bottom: 40,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Text(
-                    '2025.05.14',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        letterSpacing: 1.5),
-                  ),
-                ),
-              ),
+              bottom: 38,
+              child: Center(child: _DateStamp(text: '2026.05.15')),
             ),
           ],
         ),
@@ -154,7 +104,6 @@ class FamilyVerticalVideoScreen extends StatelessWidget {
   }
 }
 
-// ── F12 橫式影片-家屬 (1:68) ──
 class FamilyHorizontalVideoScreen extends StatefulWidget {
   const FamilyHorizontalVideoScreen({super.key});
 
@@ -176,9 +125,7 @@ class _FamilyHorizontalVideoScreenState
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
 
@@ -188,47 +135,48 @@ class _FamilyHorizontalVideoScreenState
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1F1F1F), Color(0xFF000000)],
-                ),
-              ),
-            ),
-          ),
-          const Center(
-            child: Icon(Icons.play_arrow_rounded,
-                size: 96, color: Colors.white70),
+          const Positioned.fill(
+            child: FamilyVideoStill(horizontal: true, dark: true),
           ),
           Positioned(
-            top: 12,
+            top: 8,
             left: 8,
             child: IconButton(
               icon: const Icon(Icons.close_rounded, color: Colors.white),
               onPressed: () => context.pop(),
             ),
           ),
-          Positioned(
+          const Positioned(
             right: 16,
             bottom: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Text(
-                '2025.05.14',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    letterSpacing: 1.5),
-              ),
-            ),
+            child: _DateStamp(text: '2026.05.15'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DateStamp extends StatelessWidget {
+  final String text;
+
+  const _DateStamp({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.48),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+          letterSpacing: 1.1,
+        ),
       ),
     );
   }

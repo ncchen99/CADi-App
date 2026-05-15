@@ -248,7 +248,7 @@ class ModeSelectScreen extends StatelessWidget {
               ),
               const SizedBox(height: 60),
               _ModeCard(
-                title: '我是病人',
+                title: '我是患者',
                 subtitle: '個人陪伴模式',
                 icon: Icons.person_rounded,
                 color: const Color(0xFFD4C5F9),
