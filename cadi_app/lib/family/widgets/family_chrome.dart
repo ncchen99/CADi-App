@@ -169,46 +169,35 @@ class FamilyVideoStill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: dark
-              ? const [Color(0xFF111111), Color(0xFF3A3A3A)]
-              : const [Color(0xFFECEBE7), Color(0xFFFFFFFF)],
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          horizontal
+              ? 'assets/images/life_story/photo_9.jpg'
+              : 'assets/images/life_story/photo_13.jpg',
+          fit: BoxFit.cover,
         ),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Align(
-            alignment: horizontal
-                ? Alignment.centerRight
-                : Alignment.bottomCenter,
-            child: FractionallySizedBox(
-              widthFactor: horizontal ? 0.34 : 0.7,
-              heightFactor: horizontal ? 0.92 : 0.62,
-              child: const CadiSoftBot(size: 180, blurred: false),
+        if (dark)
+          const DecoratedBox(
+            decoration: BoxDecoration(color: Color(0x66000000)),
+          ),
+        Center(
+          child: Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.78),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.play_arrow_rounded,
+              color: AppColors.primaryText,
+              size: 36,
             ),
           ),
-          Center(
-            child: Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.78),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.play_arrow_rounded,
-                color: AppColors.primaryText,
-                size: 36,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

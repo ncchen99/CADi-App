@@ -23,7 +23,7 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/videos/collo.mp4')
+    _controller = VideoPlayerController.asset('assets/videos/family_beach.mp4')
       ..initialize().then((_) {
         if (mounted) {
           setState(() {
@@ -46,9 +46,7 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
   void dispose() {
     _controller.dispose();
     // Restore default system orientations to portrait only
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
 
@@ -63,11 +61,10 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
   }
 
   void _toggleFullscreen() {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     if (isLandscape) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     } else {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
@@ -78,7 +75,8 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -103,9 +101,7 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
                           child: VideoPlayer(_controller),
                         )
                       : const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
+                          child: CircularProgressIndicator(color: Colors.white),
                         ),
                 ),
               ),
@@ -157,8 +153,9 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
                   right: 24,
                   child: Text(
                     '科普影片',
-                    style: AppTextStyles.heading2(context)
-                        .copyWith(color: Colors.white),
+                    style: AppTextStyles.heading2(
+                      context,
+                    ).copyWith(color: Colors.white),
                   ),
                 ),
 

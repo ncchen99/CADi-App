@@ -381,25 +381,9 @@ class _MemoryCollage extends StatelessWidget {
             ),
             itemCount: 9,
             itemBuilder: (context, tile) {
-              final color = colors[tile % colors.length];
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color.lerp(color, Colors.white, (tile % 3) * 0.16)!,
-                      Color.lerp(
-                        color,
-                        Colors.black,
-                        0.26 + (index % 2) * 0.08,
-                      )!,
-                    ],
-                  ),
-                ),
-                child: CustomPaint(
-                  painter: _PhotoTexturePainter(seed: tile + index * 7),
-                ),
+              return Image.asset(
+                _lifeStoryPhoto(index * 9 + tile),
+                fit: BoxFit.cover,
               );
             },
           ),
@@ -409,32 +393,8 @@ class _MemoryCollage extends StatelessWidget {
   }
 }
 
-class _PhotoTexturePainter extends CustomPainter {
-  final int seed;
-
-  _PhotoTexturePainter({required this.seed});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.14)
-      ..strokeWidth = 1.5;
-    final y = (seed % 5 + 1) * size.height / 7;
-    canvas.drawLine(
-      Offset(0, y),
-      Offset(size.width, y + (seed.isEven ? 8 : -8)),
-      paint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * ((seed % 4 + 1) / 5), size.height * 0.5),
-      6 + (seed % 3) * 2,
-      paint..style = PaintingStyle.fill,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _PhotoTexturePainter oldDelegate) =>
-      oldDelegate.seed != seed;
+String _lifeStoryPhoto(int index) {
+  return 'assets/images/life_story/photo_${index % 35}.jpg';
 }
 
 class _Topic {
@@ -557,26 +517,10 @@ class _MoodMemoryCard extends StatelessWidget {
             children: [
               Column(
                 children: List.generate(wide ? 5 : 4, (index) {
-                  final base = mood.colors[index % mood.colors.length];
                   return Expanded(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color.lerp(base, Colors.white, (index % 2) * 0.12)!,
-                            Color.lerp(
-                              mood.colors.last,
-                              Colors.black,
-                              0.16 + (index % 3) * 0.08,
-                            )!,
-                          ],
-                        ),
-                      ),
-                      child: CustomPaint(
-                        painter: _PhotoTexturePainter(seed: seed + index),
-                      ),
+                    child: Image.asset(
+                      _lifeStoryPhoto(seed + index),
+                      fit: BoxFit.cover,
                     ),
                   );
                 }),
