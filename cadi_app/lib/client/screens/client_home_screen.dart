@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../shared/theme/app_theme.dart';
 import '../../shared/widgets/cadi_bottom_nav.dart';
 import '../widgets/client_chrome.dart';
-import 'life_story_screen.dart';
 
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
@@ -18,6 +17,10 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
   int _tabIndex = 0;
 
   void _handleNav(int index) {
+    if (index == 1) {
+      context.go('/client/life-story');
+      return;
+    }
     if (index == 2) {
       context.go('/client/chat');
       return;
@@ -31,11 +34,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
       extendBody: true,
       body: IndexedStack(
         index: _tabIndex,
-        children: const [
-          _HomeTab(),
-          LifeStoryScreen(showBackButton: false),
-          SizedBox.shrink(),
-        ],
+        children: const [_HomeTab(), SizedBox.shrink(), SizedBox.shrink()],
       ),
       bottomNavigationBar: CadiBottomNav(
         currentIndex: _tabIndex,
