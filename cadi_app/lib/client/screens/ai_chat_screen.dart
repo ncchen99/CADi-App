@@ -71,6 +71,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
       _inputController.clear();
     });
     _persist();
+    if (text.contains('影片')) {
+      Future.delayed(const Duration(milliseconds: 600), () {
+        if (mounted) {
+          context.push('/client/edu-video');
+        }
+      });
+    }
   }
 
   @override

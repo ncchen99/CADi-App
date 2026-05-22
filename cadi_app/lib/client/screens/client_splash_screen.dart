@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/client_chrome.dart';
 
@@ -19,8 +20,8 @@ class _ClientSplashScreenState extends State<ClientSplashScreen> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer(const Duration(milliseconds: 1500), () {
-      if (mounted) context.go('/client');
+    _timer = Timer(const Duration(seconds: 5), () {
+      if (mounted) context.go('/client/onboarding');
     });
   }
 
@@ -34,10 +35,21 @@ class _ClientSplashScreenState extends State<ClientSplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ClientGradientBackground(
-        child: const SafeArea(
-          child: Center(child: CadiWordmark(size: 72)),
+        child: SafeArea(
+          child: Center(
+            child: Text(
+              'Hi',
+              style: GoogleFonts.lexend(
+                color: const Color(0xFF3A3939),
+                fontSize: 72,
+                fontWeight: FontWeight.w300,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 }
+

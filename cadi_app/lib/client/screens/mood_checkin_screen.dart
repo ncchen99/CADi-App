@@ -89,7 +89,7 @@ class _MoodCheckinScreenState extends State<MoodCheckinScreen> {
                         setState(() => _selected = index);
                         AppStorage.setMoodIndex(index);
                         if (index == 0) context.go('/client/chat');
-                        if (index == 2) context.go('/client/life-story');
+                        if (index == 2) context.go('/client/compass');
                       },
                     ),
                   ),

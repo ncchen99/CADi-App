@@ -43,6 +43,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _goBack() {
     if (_page == 0) {
       context.go('/client/onboarding/intro');
+    } else if (_page == 3) {
+      _pageController.animateToPage(
+        1,
+        duration: const Duration(milliseconds: 340),
+        curve: Curves.easeOutCubic,
+      );
     } else {
       _pageController.previousPage(
         duration: const Duration(milliseconds: 340),
@@ -59,7 +65,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     await AppStorage.setOnboardingImage(bytes);
     if (!mounted) return;
     setState(() => _image = bytes);
-    _goNext();
+    // Bypasses explain step and goes directly to the "總數 3" emotion/card grid list page
+    _pageController.animateToPage(
+      3,
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   Future<void> _submitText() async {
@@ -69,7 +80,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _pickTag(String tag) async {
     await AppStorage.setOnboardingTag(tag);
-    _goNext();
+    await AppStorage.setOnboardingDone(true);
+    if (!mounted) return;
+    context.push('/client/onboarding/preview');
   }
 
   @override
@@ -110,7 +123,7 @@ class _QuestionStep extends StatelessWidget {
       child: ClientGradientBackground(
         child: Center(
           child: Text(
-            '想一下，\n什麼東西能夠代表你現在的狀態',
+            '想一下\n什麼東西最能代表你現在的狀態',
             textAlign: TextAlign.center,
             style: AppTextStyles.heading1(
               context,

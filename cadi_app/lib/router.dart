@@ -15,6 +15,7 @@ import 'client/screens/motivation_screen.dart';
 import 'client/screens/onboarding_intro_screen.dart';
 import 'client/screens/onboarding_screen.dart';
 import 'client/screens/status_gallery_screen.dart';
+import 'client/screens/status_preview_screen.dart';
 import 'client/screens/tunnel_morning_screen.dart';
 import 'client/screens/tunnel_quote_screen.dart';
 import 'family/screens/family_home_screen.dart';
@@ -30,7 +31,7 @@ final router = GoRouter(
     if (state.matchedLocation != '/') return null;
     final mode = AppStorage.lastMode;
     if (mode == 'client') {
-      return AppStorage.onboardingDone ? '/client' : '/client/onboarding/intro';
+      return '/client/splash';
     }
     if (mode == 'family') return '/family/splash';
     return '/mode-select';
@@ -51,6 +52,10 @@ final router = GoRouter(
     GoRoute(
       path: '/client/onboarding/gallery', // C4
       builder: (_, __) => const StatusGalleryScreen(),
+    ),
+    GoRoute(
+      path: '/client/onboarding/preview', // Preview
+      builder: (_, __) => const StatusPreviewScreen(),
     ),
     GoRoute(
       path: '/client/splash', // C5
@@ -244,11 +249,7 @@ class ModeSelectScreen extends StatelessWidget {
                 onTap: () async {
                   await AppStorage.setMode('client');
                   if (!context.mounted) return;
-                  context.go(
-                    AppStorage.onboardingDone
-                        ? '/client'
-                        : '/client/onboarding/intro',
-                  );
+                  context.go('/client/splash');
                 },
               ),
               const SizedBox(height: 16),
