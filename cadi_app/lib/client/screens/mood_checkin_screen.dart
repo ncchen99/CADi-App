@@ -21,6 +21,12 @@ class _MoodCheckinScreenState extends State<MoodCheckinScreen> {
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onDoubleTap: () => context.go('/client/chat'),
+        onVerticalDragEnd: (details) {
+          final velocity = details.primaryVelocity;
+          if (velocity != null && velocity > 300) {
+            context.push('/client/life-story');
+          }
+        },
         child: ClientGradientBackground(
           child: SafeArea(
             child: Stack(

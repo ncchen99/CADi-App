@@ -54,18 +54,37 @@ class _HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<_HomeTab> {
+  @override
+  Widget build(BuildContext context) {
+    return ClientHiLandingView(
+      onTap: () => context.go('/client/mood'),
+      onSwipeUp: () => context.push('/client/mosaic'),
+    );
+  }
+}
+
+class ClientHiLandingView extends StatefulWidget {
+  final VoidCallback? onTap;
+  final VoidCallback? onSwipeUp;
+
+  const ClientHiLandingView({super.key, this.onTap, this.onSwipeUp});
+
+  @override
+  State<ClientHiLandingView> createState() => _ClientHiLandingViewState();
+}
+
+class _ClientHiLandingViewState extends State<ClientHiLandingView> {
   double _dragOffset = 0;
 
   void _onDragUpdate(DragUpdateDetails d) {
+    if (widget.onSwipeUp == null) return;
     setState(() {
       _dragOffset = (_dragOffset + d.delta.dy).clamp(-160.0, 0.0);
     });
   }
 
   void _onDragEnd(DragEndDetails _) {
-    if (_dragOffset < -80) {
-      context.push('/client/mosaic');
-    }
+    if (widget.onSwipeUp != null && _dragOffset < -80) widget.onSwipeUp!();
     setState(() => _dragOffset = 0);
   }
 
@@ -75,7 +94,7 @@ class _HomeTabState extends State<_HomeTab> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => context.go('/client/mood'),
+      onTap: widget.onTap,
       onVerticalDragUpdate: _onDragUpdate,
       onVerticalDragEnd: _onDragEnd,
       child: ClientGradientBackground(

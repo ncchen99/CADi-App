@@ -23,7 +23,7 @@ class _EduVideoScreenState extends State<EduVideoScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/videos/時光隧道.mp4')
+    _controller = VideoPlayerController.asset('assets/videos/collo.mp4')
       ..initialize().then((_) {
         if (mounted) {
           setState(() {

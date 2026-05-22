@@ -10,6 +10,7 @@ import 'client/screens/compass_screen.dart';
 import 'client/screens/edu_video_screen.dart';
 import 'client/screens/life_story_screen.dart';
 import 'client/screens/mood_checkin_screen.dart';
+import 'client/screens/archive_detail_screens.dart';
 import 'client/screens/mosaic_puzzle_screen.dart';
 import 'client/screens/motivation_screen.dart';
 import 'client/screens/onboarding_intro_screen.dart';
@@ -134,11 +135,18 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/client/archive/date-detail', // A5
-      builder: (_, __) => const ArchiveDateDetailScreen(),
+      builder: (_, __) => const CalendarDetailScreen(),
     ),
     GoRoute(
       path: '/client/archive/content-detail', // A6
       builder: (_, __) => const ArchiveContentDetailScreen(),
+    ),
+    GoRoute(
+      path: '/client/archive/mood-detail',
+      builder: (context, state) {
+        final mood = state.uri.queryParameters['mood'] ?? '心情';
+        return MoodDetailScreen(moodName: mood);
+      },
     ),
 
     // ── FAMILY ──────────────────────────────────────

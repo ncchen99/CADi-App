@@ -3,9 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import '../widgets/client_chrome.dart';
+import 'client_home_screen.dart';
 
 class ClientSplashScreen extends StatefulWidget {
   const ClientSplashScreen({super.key});
@@ -21,7 +20,7 @@ class _ClientSplashScreenState extends State<ClientSplashScreen> {
   void initState() {
     super.initState();
     _timer = Timer(const Duration(seconds: 5), () {
-      if (mounted) context.go('/client/onboarding');
+      if (mounted) context.go('/client/mood');
     });
   }
 
@@ -33,23 +32,6 @@ class _ClientSplashScreenState extends State<ClientSplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ClientGradientBackground(
-        child: SafeArea(
-          child: Center(
-            child: Text(
-              'Hi',
-              style: GoogleFonts.lexend(
-                color: const Color(0xFF3A3939),
-                fontSize: 72,
-                fontWeight: FontWeight.w300,
-                letterSpacing: 2,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    return const Scaffold(body: ClientHiLandingView());
   }
 }
-
